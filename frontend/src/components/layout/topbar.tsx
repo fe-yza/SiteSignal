@@ -1,0 +1,29 @@
+import Link from "next/link";
+
+import { logoutAction } from "@/app/(app)/actions";
+import { APP_NAME } from "@/lib/config";
+
+export function Topbar({ userEmail }: { userEmail: string }) {
+  return (
+    <header className="flex h-14 shrink-0 items-center justify-between border-b border-border bg-surface px-4 sm:px-6">
+      <Link
+        href="/dashboard"
+        className="text-sm font-semibold tracking-tight text-foreground rounded px-1 -mx-1"
+      >
+        {APP_NAME}
+      </Link>
+
+      <div className="flex items-center gap-3">
+        <span className="hidden text-sm text-muted sm:inline">{userEmail}</span>
+        <form action={logoutAction}>
+          <button
+            type="submit"
+            className="rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-surface-subtle hover:text-foreground"
+          >
+            Log out
+          </button>
+        </form>
+      </div>
+    </header>
+  );
+}

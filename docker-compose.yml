@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: sitesignal-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sitesignal
+      POSTGRES_PASSWORD: sitesignal
+      POSTGRES_DB: sitesignal
+    ports:
+      # Host port 5433 avoids colliding with any Postgres already running
+      # natively on the host's default 5432.
+      - "5433:5432"
+    volumes:
+      - sitesignal_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sitesignal"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  sitesignal_pgdata:
