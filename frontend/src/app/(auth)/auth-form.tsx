@@ -20,8 +20,8 @@ export function AuthForm({ action, title, subtitle, submitLabel, footer }: AuthF
   const [state, formAction, pending] = useActionState(action, undefined);
 
   return (
-    <div className="rounded-lg border border-border bg-surface p-6">
-      <h1 className="text-lg font-semibold text-foreground">{title}</h1>
+    <div className="border-t border-border-strong py-8">
+      <h1 className="editorial-title text-4xl text-foreground">{title}</h1>
       <p className="mt-1 text-sm text-muted">{subtitle}</p>
 
       <form action={formAction} className="mt-6 space-y-4" noValidate>

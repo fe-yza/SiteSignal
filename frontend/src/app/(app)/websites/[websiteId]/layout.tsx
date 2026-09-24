@@ -25,8 +25,8 @@ export default async function WebsiteLayout({
   }
 
   return (
-    <div className="flex flex-1 flex-col sm:min-h-[calc(100vh-3.5rem)] sm:flex-row">
-      <aside className="hidden w-60 shrink-0 flex-col gap-4 border-r border-border bg-surface p-4 sm:flex">
+    <div className="flex flex-1 flex-col sm:min-h-[calc(100vh-5rem)] sm:flex-row">
+      <aside className="hidden w-60 shrink-0 flex-col gap-4 border-r border-border bg-background px-4 py-8 sm:flex">
         <Link
           href="/dashboard"
           className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground"

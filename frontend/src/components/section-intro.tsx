@@ -28,7 +28,7 @@ export function SectionIntro({
   if (dismissed) return null;
 
   return (
-    <div className="mb-6 flex items-start gap-3 rounded-lg border border-accent/30 bg-accent-subtle px-4 py-3">
+    <div className="mb-6 flex items-start gap-3 border-l-2 border-accent/40 bg-accent-subtle/40 px-4 py-4">
       <Lightbulb className="mt-0.5 size-4 shrink-0 text-accent" aria-hidden="true" />
       <div className="flex-1 text-sm">
         <p className="font-medium text-foreground">{title}</p>

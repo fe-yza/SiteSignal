@@ -1,5 +1,7 @@
 "use client";
 
+import { issueLabel } from "@/lib/issue-guidance";
+
 import { ArrowDown, ArrowUp, ArrowUpDown, Search } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
@@ -7,7 +9,7 @@ import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import type { PageSummary } from "@/lib/types";
+import type { PageSummary, SEOIssueWithPage } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 type SortKey = "url" | "status_code" | "word_count" | "issue_count" | "internal_link_count";
@@ -22,7 +24,7 @@ const COLUMNS: { key: SortKey; label: string; align?: "right" }[] = [
   { key: "issue_count", label: "Issues", align: "right" },
 ];
 
-export function PagesTable({ websiteId, pages }: { websiteId: string; pages: PageSummary[] }) {
+export function PagesTable({ websiteId, auditId, pages, issues }: { websiteId: string; auditId: string; pages: PageSummary[]; issues: SEOIssueWithPage[] }) {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [sortKey, setSortKey] = useState<SortKey>("issue_count");
@@ -150,7 +152,7 @@ export function PagesTable({ websiteId, pages }: { websiteId: string; pages: Pag
                   >
                     <td className="max-w-xs px-4 py-2.5">
                       <Link
-                        href={`/websites/${websiteId}/pages/${page.id}`}
+                        href={`/websites/${websiteId}/pages/${page.id}?auditId=${auditId}`}
                         className="block truncate font-medium text-foreground hover:text-accent"
                         title={page.url}
                       >
@@ -169,7 +171,19 @@ export function PagesTable({ websiteId, pages }: { websiteId: string; pages: Pag
                     </td>
                     <td className="px-4 py-2.5 text-right">
                       {page.issue_count > 0 ? (
-                        <Badge tone="warning">{page.issue_count}</Badge>
+                        <details className="min-w-40 text-left">
+                          <summary className="cursor-pointer text-accent">{page.issue_count} issues · View findings</summary>
+                          <ul className="mt-2 space-y-3">
+                            {issues.filter(issue => issue.page_id === page.id).map(issue => (
+                              <li key={issue.id}>
+                                <Link className="text-xs text-accent underline" href={`/websites/${websiteId}/pages/${page.id}?auditId=${auditId}#issue-${issue.id}`}>
+                                  {issueLabel(issue.issue_type)} → How to fix
+                                </Link>
+                                <p className="mt-1 max-w-sm text-xs text-muted-foreground">{issue.explanation}</p>
+                              </li>
+                            ))}
+                          </ul>
+                        </details>
                       ) : (
                         <span className="text-muted">0</span>
                       )}

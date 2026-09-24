@@ -52,9 +52,9 @@ export function SiteNav({ websiteId }: { websiteId: string }) {
             href={item.href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "flex items-center justify-between gap-2 rounded-md px-2.5 py-1.5 text-sm font-medium transition-colors duration-150",
+              "flex items-center justify-between gap-2 border-l-2 border-transparent px-3 py-2 text-sm font-medium transition-colors duration-150",
               active
-                ? "bg-accent-subtle text-accent"
+                ? "border-accent bg-accent-subtle/50 text-accent"
                 : "text-muted-foreground hover:bg-surface-subtle hover:text-foreground"
             )}
           >
@@ -95,7 +95,7 @@ export function SiteNavMobile({ websiteId }: { websiteId: string }) {
             className={cn(
               "flex shrink-0 items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium whitespace-nowrap transition-colors duration-150",
               active
-                ? "bg-accent-subtle text-accent"
+                ? "border-accent bg-accent-subtle/50 text-accent"
                 : "text-muted-foreground hover:bg-surface-subtle hover:text-foreground"
             )}
           >

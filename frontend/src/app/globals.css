@@ -1,35 +1,43 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --surface: #ffffff;
-  --surface-subtle: #f8fafc;
-  --foreground: #0f172a;
-  --muted: #64748b;
-  --muted-foreground: #475569;
-  --border: #e2e8f0;
-  --border-strong: #cbd5e1;
+  --font-display: Georgia, "Times New Roman", serif;
+  color-scheme: light;
+  --background: #fdfbf7;
+  --surface: #fdfbf7;
+  --surface-subtle: #f0ede4;
+  --foreground: #2d241d;
+  --muted: #746e65;
+  --muted-foreground: #59544c;
+  --border: #deddd1;
+  --border-strong: #b5b8a7;
 
-  --accent: #4f46e5;
-  --accent-hover: #4338ca;
-  --accent-foreground: #ffffff;
-  --accent-subtle: #eef2ff;
+  --sketch-sage: #bbca8a;
+  --sketch-clay: #d27c56;
+  --accent: #48604b;
+  --accent-hover: #344a37;
+  --accent-foreground: #faf8f2;
+  --accent-subtle: #e8eddf;
 
-  --critical: #dc2626;
-  --critical-subtle: #fef2f2;
-  --warning: #d97706;
-  --warning-subtle: #fffbeb;
-  --success: #059669;
-  --success-subtle: #ecfdf5;
-  --opportunity: #2563eb;
-  --opportunity-subtle: #eff6ff;
+  --critical: #a34834;
+  --critical-subtle: #f6e8df;
+  --warning: #946126;
+  --warning-subtle: #f5ecda;
+  --success: #48604b;
+  --success-subtle: #e8eddf;
+  --opportunity: #48604b;
+  --opportunity-subtle: #e8eddf;
 
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
 }
 
 @theme inline {
+  --font-display: Georgia, "Times New Roman", serif;
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
   --color-background: var(--background);
   --color-surface: var(--surface);
   --color-surface-subtle: var(--surface-subtle);
@@ -57,32 +65,6 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0c;
-    --surface: #121215;
-    --surface-subtle: #18181c;
-    --foreground: #f1f5f9;
-    --muted: #94a3b8;
-    --muted-foreground: #cbd5e1;
-    --border: #27272e;
-    --border-strong: #34343d;
-
-    --accent: #6366f1;
-    --accent-hover: #818cf8;
-    --accent-foreground: #ffffff;
-    --accent-subtle: #1e1b4b;
-
-    --critical: #f87171;
-    --critical-subtle: #2b1414;
-    --warning: #fbbf24;
-    --warning-subtle: #2b2110;
-    --success: #34d399;
-    --success-subtle: #0f2a20;
-    --opportunity: #60a5fa;
-    --opportunity-subtle: #10203f;
-  }
-}
 
 * {
   border-color: var(--border);
@@ -120,3 +102,21 @@ body {
 .toast-enter {
   animation: toast-enter 150ms ease-out;
 }
+
+/* Editorial hierarchy, shared by all existing routes. Data stays in sans-serif. */
+h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(2.25rem, 4vw, 3.75rem); line-height: 1.1; letter-spacing: -0.035em; text-wrap: balance; }
+h2 { text-wrap: balance; }
+p { line-height: 1.65; }
+.editorial-title { font-family: var(--font-display); font-weight: 400; letter-spacing: -0.025em; }
+.eyebrow { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted-foreground); }
+.editorial-list { counter-reset: opportunity; }
+.editorial-list > li { counter-increment: opportunity; position: relative; padding-left: 3.25rem; border-top: 1px solid var(--border); }
+.editorial-list > li::before { content: counter(opportunity, decimal-leading-zero); position: absolute; left: 0; top: 1.25rem; font: italic 1.5rem var(--font-display); color: var(--accent); }
+.editorial-list > li > div { border: 0; background: transparent; padding-left: 0; padding-right: 0; }
+table { font-variant-numeric: tabular-nums; }
+th { font-weight: 500; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* Margin drawings give open compositions a human touch without crowding data. */
+.sketch-heading { position: relative; padding-bottom: 2rem; }
+.sketch-heading::after { content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: var(--foreground); opacity: .7; clip-path: polygon(0 50%, 18% 22%, 44% 42%, 70% 12%, 100% 44%, 100% 76%, 64% 68%, 34% 88%, 0 73%); }

@@ -1,4 +1,5 @@
 import "server-only";
+import { redirect } from "next/navigation";
 
 import { getBackendAccessToken } from "@/lib/backend-session";
 
@@ -21,6 +22,7 @@ export async function backendFetch<T>(
   req?: Request
 ): Promise<T> {
   const token = await getBackendAccessToken(req);
+  if (!token) redirect("/login?reason=session-expired");
 
   const res = await fetch(`${process.env.BACKEND_URL}${path}`, {
     ...options,
@@ -31,6 +33,9 @@ export async function backendFetch<T>(
     },
     cache: "no-store",
   });
+
+  // The backend token can expire before the NextAuth session cookie does.
+  if (res.status === 401) redirect("/login?reason=session-expired");
 
   if (!res.ok) {
     let detail = "Something went wrong. Please try again.";

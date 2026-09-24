@@ -19,11 +19,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         const res = await fetch(`${process.env.BACKEND_URL}/api/auth/login`, {
           method: "POST",
+          signal: AbortSignal.timeout(10_000),
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password }),
         });
 
-        if (!res.ok) return null;
+        if (res.status === 401) return null;
+        if (!res.ok) throw new Error("Authentication service unavailable");
 
         const data: BackendTokenResponse = await res.json();
         return {

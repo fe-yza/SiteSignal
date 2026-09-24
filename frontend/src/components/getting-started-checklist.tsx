@@ -12,10 +12,10 @@ export interface ChecklistStep {
 
 export function GettingStartedChecklist({ steps }: { steps: ChecklistStep[] }) {
   return (
-    <div className="mb-8 rounded-lg border border-border bg-surface p-5">
+    <div className="mb-10 border-y border-border py-6">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h2 className="text-sm font-semibold text-foreground">Getting started</h2>
+          <h2 className="editorial-title text-2xl text-foreground">Getting started</h2>
           <p className="mt-0.5 text-sm text-muted">A few steps to get your first real results.</p>
         </div>
         <form action={dismissIntroAction}>
@@ -29,7 +29,7 @@ export function GettingStartedChecklist({ steps }: { steps: ChecklistStep[] }) {
         </form>
       </div>
 
-      <ol className="mt-4 flex flex-col gap-1">
+      <ol className="mt-4 grid grid-cols-1 gap-x-8 gap-y-1 md:grid-cols-2">
         {steps.map((step, i) => (
           <li key={step.label}>
             <Link

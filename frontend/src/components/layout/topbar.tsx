@@ -5,10 +5,10 @@ import { APP_NAME } from "@/lib/config";
 
 export function Topbar({ userEmail }: { userEmail: string }) {
   return (
-    <header className="flex h-14 shrink-0 items-center justify-between border-b border-border bg-surface px-4 sm:px-6">
+    <header className="flex h-20 shrink-0 items-center justify-between border-b border-border bg-background px-5 sm:px-10">
       <Link
         href="/dashboard"
-        className="text-sm font-semibold tracking-tight text-foreground rounded px-1 -mx-1"
+        className="editorial-title text-3xl text-foreground px-1 -mx-1"
       >
         {APP_NAME}
       </Link>

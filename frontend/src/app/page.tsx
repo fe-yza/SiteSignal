@@ -1,3 +1,4 @@
+import { FieldSketch } from "@/components/field-sketch";
 import { Globe, ListChecks, Search, Target } from "lucide-react";
 import Link from "next/link";
 
@@ -34,7 +35,7 @@ export default function LandingPage() {
     <div className="flex flex-1 flex-col">
       <header className="border-b border-border">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 sm:px-6">
-          <span className="text-sm font-semibold tracking-tight text-foreground">{APP_NAME}</span>
+          <span className="editorial-title text-3xl text-foreground">{APP_NAME}</span>
           <nav className="flex items-center gap-2">
             <Link
               href="/login"
@@ -50,18 +51,24 @@ export default function LandingPage() {
       </header>
 
       <main className="flex-1">
-        <section className="mx-auto max-w-3xl px-4 py-20 text-center sm:px-6 sm:py-28">
-          <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
+        <section className="mx-auto max-w-5xl px-5 py-16 sm:px-8 sm:py-24">
+          <div className="sketch-heading grid items-center gap-8 md:grid-cols-[1.1fr_1fr]">
+          <div>
+          <p className="eyebrow mb-6">A little clarity for your corner of the web</p>
+          <h1 className="editorial-title text-5xl sm:text-7xl">
             Know what to fix next.
           </h1>
-          <p className="mx-auto mt-4 max-w-xl text-base text-muted sm:text-lg">
+          <p className="mt-6 max-w-lg text-base text-muted">
             SiteSignal crawls your website, finds the technical and on-page SEO problems holding
             back your rankings, and turns them into a prioritized list of what to fix first.
           </p>
-          <div className="mt-8 flex justify-center">
+          <div className="mt-8 flex">
             <LinkButton href="/register" size="lg">
               Audit your website
             </LinkButton>
+          </div>
+          </div>
+          <FieldSketch className="mx-auto w-full max-w-72 md:max-w-sm" />
           </div>
         </section>
 
@@ -72,7 +79,7 @@ export default function LandingPage() {
             </h2>
             <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {STEPS.map((step, i) => (
-                <div key={step.title} className="rounded-lg border border-border bg-surface p-5">
+                <div key={step.title} className="border-t border-border-strong py-6">
                   <div className="flex size-9 items-center justify-center rounded-md bg-accent-subtle text-accent">
                     <step.icon className="size-4.5" />
                   </div>
@@ -86,7 +93,7 @@ export default function LandingPage() {
         </section>
 
         <section className="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6 sm:py-20">
-          <h2 className="text-2xl font-semibold tracking-tight text-foreground">
+          <h2 className="editorial-title text-4xl text-foreground">
             Real crawl data. Deterministic analysis. No guesswork.
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-sm text-muted">

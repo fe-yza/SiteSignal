@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { AuditGate } from "@/components/audit-gate";
 import { PageShell } from "@/components/page-shell";
 import { SectionIntro } from "@/components/section-intro";
-import { listPages } from "@/lib/api/audit-data";
+import { listPages, listIssues } from "@/lib/api/audit-data";
 import { getLatestAudit } from "@/lib/api/audits";
 import { getCurrentUser } from "@/lib/api/users";
 
@@ -28,7 +28,7 @@ export default async function PagesListPage({
     );
   }
 
-  const [pages, user] = await Promise.all([listPages(websiteId, audit.id), getCurrentUser()]);
+  const [pages, user, issues] = await Promise.all([listPages(websiteId, audit.id), getCurrentUser(), listIssues(websiteId, audit.id)]);
 
   return (
     <PageShell title="Pages" description={`${pages.length} pages crawled in the latest audit.`}>
@@ -36,7 +36,7 @@ export default async function PagesListPage({
         Every page from the latest crawl, with its status, word count, and how many issues it has.
         Sort or search to find a specific page, then click into it for the full detail.
       </SectionIntro>
-      <PagesTable websiteId={websiteId} pages={pages} />
+      <PagesTable websiteId={websiteId} auditId={audit.id} pages={pages} issues={issues} />
     </PageShell>
   );
 }

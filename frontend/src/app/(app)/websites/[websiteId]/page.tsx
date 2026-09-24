@@ -1,3 +1,4 @@
+import { Doodle } from "@/components/doodle";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -39,8 +40,8 @@ export default async function WebsiteOverviewPage({
 
   if (audit.status === "pending" || audit.status === "crawling" || audit.status === "analyzing") {
     return (
-      <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">Overview</h1>
+      <div className="mx-auto max-w-3xl px-5 py-12 sm:px-8 sm:py-16">
+        <h1 className="editorial-title text-4xl text-foreground">The shape of your site.</h1>
         <p className="mt-1 text-sm text-muted">
           Your audit is running — this page updates automatically as it progresses.
         </p>
@@ -53,8 +54,8 @@ export default async function WebsiteOverviewPage({
 
   if (audit.status === "failed") {
     return (
-      <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">Overview</h1>
+      <div className="mx-auto max-w-3xl px-5 py-12 sm:px-8 sm:py-16">
+        <h1 className="editorial-title text-4xl text-foreground">The shape of your site.</h1>
         <Card className="mt-6 border-critical/30 p-6">
           <p className="text-sm font-semibold text-critical">The last audit couldn&apos;t finish</p>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -81,11 +82,11 @@ export default async function WebsiteOverviewPage({
   const topOpportunities = opportunities.slice(0, 5);
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
+    <div className="mx-auto max-w-5xl px-5 py-12 sm:px-8 sm:py-16">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-xl font-semibold tracking-tight text-foreground">Overview</h1>
+            <h1 className="editorial-title text-4xl text-foreground">The shape of your site.</h1>
             <Badge tone={health.tone}>{health.label}</Badge>
           </div>
           <p className="mt-1 text-sm text-muted">
@@ -96,10 +97,10 @@ export default async function WebsiteOverviewPage({
         <StartAuditButton websiteId={websiteId} label="Run new audit" />
       </div>
 
-      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
+      <div className="mt-12 grid grid-cols-1 gap-10 xl:grid-cols-3">
+        <Card className="xl:col-span-2">
           <CardHeader>
-            <CardTitle>Top opportunities</CardTitle>
+            <CardTitle>Start with these.</CardTitle>
           </CardHeader>
           <CardContent>
             {topOpportunities.length === 0 ? (
@@ -107,20 +108,20 @@ export default async function WebsiteOverviewPage({
                 No opportunities found in the latest audit — this site is in good shape.
               </p>
             ) : (
-              <ul className="divide-y divide-border">
+              <ol className="editorial-list">
                 {topOpportunities.map((opp) => (
                   <li
                     key={opp.id}
-                    className="flex items-start justify-between gap-4 py-3 first:pt-0 last:pb-0"
+                    className="flex items-start justify-between gap-4 py-6"
                   >
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-medium text-foreground">{opp.title}</p>
-                      <p className="mt-0.5 line-clamp-1 text-xs text-muted">{opp.recommended_action}</p>
+                      <p className="editorial-title text-xl text-foreground"><Link href={`/websites/${websiteId}/opportunities#opportunity-${opp.id}`} className="hover:text-accent underline decoration-border-strong underline-offset-4">{opp.title}</Link></p>
+                      <p className="mt-2 text-sm text-muted">{opp.recommended_action}</p>
                     </div>
                     <SeverityBadge severity={opp.severity} />
                   </li>
                 ))}
-              </ul>
+              </ol>
             )}
             {opportunities.length > 5 && (
               <Link
@@ -158,7 +159,8 @@ function NoAuditYet({ websiteId, justAdded }: { websiteId: string; justAdded?: b
           Website added — you&apos;re ready to run your first audit.
         </p>
       )}
-      <h1 className="text-xl font-semibold tracking-tight text-foreground">
+      <Doodle className="mx-auto mb-6 w-44" />
+      <h1 className="editorial-title text-4xl text-foreground">
         Ready for your first audit
       </h1>
       <p className="mt-2 text-sm text-muted">

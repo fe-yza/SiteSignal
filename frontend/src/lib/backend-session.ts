@@ -1,7 +1,7 @@
 import "server-only";
 
 import { cookies } from "next/headers";
-import { getToken } from "next-auth/jwt";
+import { readSessionToken } from "./session-token.mjs";
 
 /**
  * Reads the FastAPI access token back out of the NextAuth JWT.
@@ -18,7 +18,7 @@ import { getToken } from "next-auth/jwt";
  */
 export async function getBackendAccessToken(req?: Request): Promise<string | null> {
   if (req) {
-    const token = await getToken({ req, secret: process.env.AUTH_SECRET });
+    const token = await readSessionToken(req, process.env.AUTH_SECRET);
     return token?.accessToken ?? null;
   }
 
@@ -28,10 +28,10 @@ export async function getBackendAccessToken(req?: Request): Promise<string | nul
     .map((c) => `${c.name}=${c.value}`)
     .join("; ");
 
-  const token = await getToken({
-    req: { headers: { cookie: cookieHeader } } as unknown as Request,
-    secret: process.env.AUTH_SECRET,
-  });
+  const token = await readSessionToken(
+    new Request("http://session.internal", { headers: { cookie: cookieHeader } }),
+    process.env.AUTH_SECRET,
+  );
 
   return token?.accessToken ?? null;
 }

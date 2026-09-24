@@ -1,3 +1,5 @@
+import { IssueGuide } from "@/components/issue-guide";
+import { capturedEvidence, issueLabel } from "@/lib/issue-guidance";
 import { ExternalLink } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -16,16 +18,20 @@ export const metadata: Metadata = { title: "Page detail" };
 
 export default async function PageDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ websiteId: string; pageId: string }>;
+  searchParams: Promise<{ auditId?: string }>;
 }) {
   const { websiteId, pageId } = await params;
-  const audit = await getLatestAudit(websiteId);
-  if (!audit) notFound();
+  const { auditId: requestedAuditId } = await searchParams;
+  if (requestedAuditId && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(requestedAuditId)) notFound();
+  const auditId = requestedAuditId ?? (await getLatestAudit(websiteId))?.id;
+  if (!auditId) notFound();
 
   let page;
   try {
-    page = await getPage(websiteId, audit.id, pageId);
+    page = await getPage(websiteId, auditId, pageId);
   } catch (err) {
     if (err instanceof BackendError && err.status === 404) notFound();
     throw err;
@@ -62,6 +68,8 @@ export default async function PageDetailPage({
         <Badge tone={isSuccess ? "neutral" : "critical"}>{page.status_code ?? "Error"}</Badge>
       </div>
 
+      <p className="mt-4 text-xs text-muted">Captured {new Date(page.created_at).toLocaleString()}. These findings describe this audit snapshot; open the live page to check subsequent changes.</p>
+
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Stat label="Word count" value={page.word_count} />
         <Stat label="Crawl depth" value={page.crawl_depth} />
@@ -69,7 +77,7 @@ export default async function PageDetailPage({
         <Stat label="Incoming links" value={page.incoming_internal_link_count} />
       </div>
 
-      <Card className="mt-6">
+      <Card className="mt-6 scroll-mt-8" id="issues">
         <CardHeader>
           <CardTitle>Issues on this page ({page.issues.length})</CardTitle>
         </CardHeader>
@@ -79,7 +87,8 @@ export default async function PageDetailPage({
           ) : (
             <ul className="flex flex-col gap-4">
               {page.issues.map((issue) => (
-                <li key={issue.id} className="border-l-2 border-border pl-3">
+                <li key={issue.id} id={`issue-${issue.id}`} className="scroll-mt-8 border-l-2 border-border pl-3">
+                  <h3 className="editorial-title mb-2 text-xl">{issueLabel(issue.issue_type)}</h3>
                   <div className="flex flex-wrap items-center gap-2">
                     <SeverityBadge severity={issue.severity} />
                     <Badge tone="neutral">{formatCategory(issue.category)}</Badge>
@@ -89,6 +98,11 @@ export default async function PageDetailPage({
                     <span className="font-medium">Recommended: </span>
                     {issue.recommended_action}
                   </p>
+                  <div className="mt-3 bg-surface-subtle p-3 text-sm">
+                    <h4 className="font-semibold">Captured evidence</h4>
+                    <p className="mt-1 whitespace-pre-wrap break-words text-muted-foreground">{capturedEvidence(issue.issue_type, page)}</p>
+                  </div>
+                  <IssueGuide type={issue.issue_type} />
                 </li>
               ))}
             </ul>
@@ -121,12 +135,12 @@ export default async function PageDetailPage({
             ) : (
               <ul className="max-h-64 space-y-2 overflow-y-auto text-sm">
                 {page.images.map((img, i) => (
-                  <li key={i} className="truncate">
+                  <li key={i} className="break-all">
                     <span className="text-muted-foreground">{img.src}</span>
                     {img.alt ? (
                       <span className="text-foreground"> — &ldquo;{img.alt}&rdquo;</span>
                     ) : (
-                      <span className="text-critical"> — missing alt text</span>
+                      <span className="text-critical"> — missing or empty alt text (review context)</span>
                     )}
                   </li>
                 ))}

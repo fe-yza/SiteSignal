@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import { Doodle } from "@/components/doodle";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -44,6 +44,11 @@ export function AuditProgress({
         const res = await fetch(`/api/websites/${websiteId}/audits/${audit.id}`, {
           cache: "no-store",
         });
+        if (res.status === 401) {
+          clearInterval(pollTimer);
+          router.replace("/login?reason=session-expired");
+          return;
+        }
         if (!res.ok) return;
         const data: Audit = await res.json();
         setAudit(data);
@@ -64,9 +69,9 @@ export function AuditProgress({
   const progress = audit.pages_limit > 0 ? Math.min(1, audit.pages_crawled / audit.pages_limit) : 0;
 
   return (
-    <div className="rounded-lg border border-border bg-surface p-6">
+    <div className="border-y border-border py-8">
       <div className="flex items-center gap-2.5">
-        <Loader2 className="size-4 animate-spin text-accent" aria-hidden="true" />
+        <Doodle className="w-24 shrink-0" />
         <p className="text-sm font-semibold text-foreground">
           {STATUS_LABEL[audit.status] ?? "Working…"}
         </p>

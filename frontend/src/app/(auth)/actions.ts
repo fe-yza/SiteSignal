@@ -31,7 +31,9 @@ export async function loginAction(
     await signIn("credentials", { ...credentials, redirect: false });
   } catch (err) {
     if (err instanceof AuthError) {
-      return { error: "Invalid email or password." };
+      return { error: err.type === "CredentialsSignin"
+        ? "Invalid email or password."
+        : "Login could not reach the server. Please try again in a moment." };
     }
     throw err;
   }
@@ -51,15 +53,30 @@ export async function registerAction(
     return { error: "Password must be at least 8 characters." };
   }
 
-  const res = await fetch(`${process.env.BACKEND_URL}/api/auth/register`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(credentials),
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${process.env.BACKEND_URL}/api/auth/register`, {
+      signal: AbortSignal.timeout(10_000),
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(credentials),
+    });
+  } catch {
+    return { error: "Account creation is temporarily unavailable. Please try again in a moment." };
+  }
 
   if (!res.ok) {
     const data = await res.json().catch(() => null);
-    return { error: data?.detail ?? "Couldn't create your account. Please try again." };
+    const detail = data?.detail;
+    // FastAPI validation errors contain an array, which React cannot render.
+    const error = typeof detail === "string"
+      ? detail
+      : Array.isArray(detail)
+        ? detail.map((item: { msg?: unknown }) =>
+            typeof item.msg === "string" ? item.msg : "Check your email and password."
+          ).join(" ")
+        : "Couldn't create your account. Please try again.";
+    return { error };
   }
 
   try {
