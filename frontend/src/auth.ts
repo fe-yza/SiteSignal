@@ -1,3 +1,5 @@
+import { backendRequest } from "@/lib/backend-http.mjs";
+
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
@@ -17,9 +19,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const password = credentials?.password;
         if (typeof email !== "string" || typeof password !== "string") return null;
 
-        const res = await fetch(`${process.env.BACKEND_URL}/api/auth/login`, {
+        const res = await backendRequest("/api/auth/login", {
           method: "POST",
-          signal: AbortSignal.timeout(10_000),
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password }),
         });

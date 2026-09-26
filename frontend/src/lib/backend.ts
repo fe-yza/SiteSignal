@@ -1,6 +1,8 @@
 import "server-only";
 import { redirect } from "next/navigation";
 
+import { backendRequest } from "@/lib/backend-http.mjs";
+
 import { getBackendAccessToken } from "@/lib/backend-session";
 
 export class BackendError extends Error {
@@ -24,7 +26,7 @@ export async function backendFetch<T>(
   const token = await getBackendAccessToken(req);
   if (!token) redirect("/login?reason=session-expired");
 
-  const res = await fetch(`${process.env.BACKEND_URL}${path}`, {
+  const res = await backendRequest(path, {
     ...options,
     headers: {
       "Content-Type": "application/json",

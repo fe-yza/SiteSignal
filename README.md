@@ -306,6 +306,31 @@ Import the repo, set the root directory to `frontend`, and set the env vars
 below. No custom build config needed — it's a standard Next.js App Router
 app.
 
+Hosted Vercel/Render frontend builds reject missing or malformed `BACKEND_URL`,
+loopback API addresses, and a missing/placeholder `AUTH_SECRET`. Set `BACKEND_URL`
+to the API origin only (no `/api` suffix). Auth requests allow up to 120 seconds
+for the API to respond, with a 180-second auth route budget where supported by
+the host. Requests that create accounts are never automatically retried.
+These checks cannot provision an API or guarantee hosting uptime.
+
+Production frontend: `https://site-signal-phi.vercel.app`.
+Production Vercel `BACKEND_URL`: `https://sitesignal-lyl1.onrender.com`.
+Render `CORS_ORIGINS`: `https://site-signal-phi.vercel.app`.
+The frontend's `/api/health` checks the live API and its database and returns
+HTTP 503 on failure; it never returns connection strings or secrets.
+Auth uses server-side requests, so browser CORS does not control that connection.
+
+Production smoke test (creates one disposable test account):
+
+```bash
+cd backend
+venv/bin/python scripts/smoke_production_auth.py https://site-signal-phi.vercel.app https://sitesignal-lyl1.onrender.com
+```
+
+This submits the live rendered signup/login forms over HTTP, checks secure
+sessions and the dashboard, and authenticates the same account against Render.
+It also checks the frontend-to-backend health endpoint and production CORS.
+
 ### Secrets checklist
 
 Generate fresh values for production — never reuse the ones in a local

@@ -3,6 +3,8 @@
 import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
 
+import { backendRequest } from "@/lib/backend-http.mjs";
+
 import { signIn } from "@/auth";
 
 export interface AuthActionState {
@@ -55,8 +57,7 @@ export async function registerAction(
 
   let res: Response;
   try {
-    res = await fetch(`${process.env.BACKEND_URL}/api/auth/register`, {
-      signal: AbortSignal.timeout(10_000),
+    res = await backendRequest("/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(credentials),

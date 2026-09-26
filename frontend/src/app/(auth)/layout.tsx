@@ -16,3 +16,6 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
     </div>
   );
 }
+
+// Leave time for a sleeping backend to start before the host ends this request.
+export const maxDuration = 180;

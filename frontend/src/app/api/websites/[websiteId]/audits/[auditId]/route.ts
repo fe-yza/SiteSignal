@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+import { backendRequest } from "@/lib/backend-http.mjs";
+
 import { getBackendAccessToken } from "@/lib/backend-session";
 
 // Thin server-side proxy so the client-side progress poller never holds a
@@ -12,8 +14,8 @@ export async function GET(
   const { websiteId, auditId } = await params;
   const token = await getBackendAccessToken(request);
 
-  const res = await fetch(
-    `${process.env.BACKEND_URL}/api/websites/${websiteId}/audits/${auditId}`,
+  const res = await backendRequest(
+    `/api/websites/${websiteId}/audits/${auditId}`,
     {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
       cache: "no-store",
